@@ -7,6 +7,7 @@ package projectindividualpartb;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import objects.Student;
 import tools.Tools;
 
 /**
@@ -193,16 +194,53 @@ public class ProjectIndividualPartB {
         String lastname;
         LocalDate date;
         double tuitionFees;
+        Boolean repeat = false;
+        String answer;
 
-        x.QueL("Enter the name of the student : ");
-        name = x.ScanForString();
-        x.QueL("Enter the last name of student : ");
-        lastname = x.ScanForString();
-        x.QueL("Enter the birth date of student [ dd/M/yyyy ] : ");
-        date = x.ScanForDate();
-        x.QueL("Enter the tuitionFees of the student : ");
-        tuitionFees = x.ScanForDouble();
+        do {
 
+            x.QueL("Enter the name of the student : ");
+            name = x.ScanForString();
+            x.QueL("Enter the last name of student : ");
+            lastname = x.ScanForString();
+            x.QueL("Enter the birth date of student [ dd/M/yyyy ] : ");
+            date = x.ScanForDate();
+            x.QueL("Enter the tuitionFees of the student : ");
+            tuitionFees = x.ScanForDouble();
+            //////Creating Object////////////////////////////////
+
+            Student student = createObjectStudent(name, lastname, date, tuitionFees);
+            /////////Add To ArrayList///////////////////////////////
+
+            x.getListOfStudents().add(student);
+
+            /////////Ask If He Wants To Add More Students////////////
+            System.out.println("----------------------------------------");
+            System.out.println("Do you want to add Student [YES / NO]");
+            answer = x.ScanForString();
+            repeat = x.repeaterMethod(answer, repeat);
+            do {
+                
+                if (repeat == null) {
+                    System.out.println("That's not a Answer! Try Again With This Options [YES / NO] :");
+                    answer = x.ScanForString();
+                }else if (repeat == false){
+                    System.out.println("\n");
+                    System.out.println("Back To [CREATE] menu ");
+                    startingSwitchMenu();
+                }
+
+                repeat = x.repeaterMethod(answer, repeat);
+
+            } while (repeat == null);
+        } while (repeat == true);
+    }
+
+    private static Student createObjectStudent(String name, String lastname, LocalDate dateofBirth, double tuitionFees) {
+
+        Student student = new Student(name, lastname, dateofBirth, tuitionFees);
+
+        return (student);
     }
 
 }

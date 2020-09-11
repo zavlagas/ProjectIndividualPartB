@@ -150,13 +150,32 @@ public final class Tools {
         return validate;
     }
 
-    /////////////////////////////LOOP AND READ THE LISTS /////////////////////////////
+    ///////////////////////////// READ THE ArrayLISTS /////////////////////////////
     public void loopTheList(List x) {
 
         for (Object object : x) {
             System.out.println(object);
         }
 
+    }
+    ///////////////////////////// REPEAT METHODS  /////////////////////////////
+
+    public Boolean repeaterMethod(String answer, Boolean repeat) {
+
+        if ((answer.contains("YES")) || (answer.contains("Yes")) || (answer.contains("yes")) || (answer.contains("y")) || (answer.contains("Y"))) {
+
+            repeat = true;
+
+        } else if ((answer.contains("NO")) || (answer.contains("No")) || (answer.contains("no")) || (answer.contains("N")) || (answer.contains("n"))) {
+
+            repeat = false;
+
+        } else {
+
+            repeat = null;
+
+        }
+        return (repeat);
     }
 
 }
