@@ -5,6 +5,7 @@
  */
 package tools;
 
+import java.sql.ResultSet;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -12,6 +13,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import modelsconnection.Database;
 import objects.Assignment;
 import objects.Course;
 import objects.Student;
@@ -27,10 +29,12 @@ public final class Tools {
     private List<Trainer> listOfTrainers = new ArrayList();
     private List<Assignment> listOfAssignments = new ArrayList();
     private List<Course> listOfCourses = new ArrayList();
+    private Database db;
     private Scanner scan = new Scanner(System.in);
 
     public Tools() {
         setScan();
+        setDb();
     }
 
     /////////////////////////////GET LISTS /////////////////////////////
@@ -48,6 +52,23 @@ public final class Tools {
 
     public List<Course> getListOfCourses() {
         return listOfCourses;
+    }
+
+    ///////////////////////////Set and Connect To Database//////////////////
+    public Database getDb() {
+        return db;
+    }
+
+    private void setDb() {
+        this.db = new Database("localhost", "3306", "bootcamp", "root", "1234");
+
+    }
+    
+    public  ResultSet executeQuery(String sql) {
+        
+        ResultSet rs = null;
+        rs = db.connectAndExecuteQuery(sql);
+        return (rs);
     }
 
     /////////////////////////////String/////////////////////////////
@@ -160,22 +181,25 @@ public final class Tools {
     }
     ///////////////////////////// REPEAT METHODS  /////////////////////////////
 
-    public Boolean repeaterMethod(String answer, Boolean repeat) {
+    public Boolean chooseYesOrNo() {
 
-        if ((answer.contains("YES")) || (answer.contains("Yes")) || (answer.contains("yes")) || (answer.contains("y")) || (answer.contains("Y"))) {
+        QueNL("Do you want to add more [YES / NO] :");
 
-            repeat = true;
+        while (true) {
 
-        } else if ((answer.contains("NO")) || (answer.contains("No")) || (answer.contains("no")) || (answer.contains("N")) || (answer.contains("n"))) {
+            String answer = ScanForString();
+            if ((answer.contains("YES")) || (answer.contains("Yes")) || (answer.contains("yes")) || (answer.contains("y")) || (answer.contains("Y"))) {
 
-            repeat = false;
+                return (true);
 
-        } else {
+            } else if ((answer.contains("NO")) || (answer.contains("No")) || (answer.contains("no")) || (answer.contains("N")) || (answer.contains("n"))) {
 
-            repeat = null;
+                return (false);
+
+            }
 
         }
-        return (repeat);
+
     }
 
 }

@@ -159,7 +159,7 @@ public class Database {
     }
 
     public String getConnectionString() {
-        String value = "jdbc:mysql://" + this.serverIP + ":" + this.srvPort + "/" + this.databaseName + "?zeroDateTimeBehavior=convertToNull";
+        String value = "jdbc:mysql://" + this.serverIP + ":" + this.srvPort + "/" + this.databaseName + "?useTimezone=true&serverTimezone=UTC";
 
         return (value);
     }

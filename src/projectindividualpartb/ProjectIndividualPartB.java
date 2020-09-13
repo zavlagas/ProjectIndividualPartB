@@ -5,10 +5,26 @@
  */
 package projectindividualpartb;
 
+import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import modelsconnection.Database;
+import objects.Assignment;
+import objects.Course;
 import objects.Student;
+import objects.Trainer;
 import tools.Tools;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -54,15 +70,17 @@ public class ProjectIndividualPartB {
         int choiceentry;
 
         do {
-            System.out.println("Enter \"1\", \"2\", \"3\" or \"4\"");
+            x.QueNL("Create Entity :    [1]\nInsert Entity :    [2]\nShow Lists :       [3]\nSearch Date :      [4]\nExit Programm :    [5]");
+            x.QueNL("-------------------------------");
+            System.out.println("Enter [ \"1\", \"2\", \"3\", \"4\" or \"5\" ]");
             choiceentry = x.ScanForInt();
 
             switch (choiceentry) {
                 case 1:
-                    // You Want To Create Student
+                    createOptionSwitchMenu();
                     break;
                 case 2:
-                    // You Want To Insert To Course (Students,Assignments,Trainers) 
+                    // You Want To Manage Courses (Students,Assignments,Trainers) 
                     break;
                 case 3:
                     //  You Want To Show Our Lists
@@ -85,24 +103,26 @@ public class ProjectIndividualPartB {
         int choiceentry;
 
         do {
-            System.out.println("Enter \"1\", \"2\", \"3\", \"4\" or \"5\"");
+            x.QueNL("Student :    [1]\nTrainer :    [2]\nAssignment : [3]\nCourse :     [4]\nGo Back :    [5]");
+            x.QueNL("-----------------------------------");
+            System.out.println("Enter [ \"1\", \"2\", \"3\", \"4\" or \"5\" ]");
             choiceentry = x.ScanForInt();
 
             switch (choiceentry) {
                 case 1:
-                    // Create A Student
+                    createStudent();
                     break;
                 case 2:
-                    //  Create Trainer
+                    createTrainer();
                     break;
                 case 3:
-                    // Create assignment
+                    createAssignment();
                     break;
                 case 4:
-                    // Create course
+                    createCourse();
                     break;
                 case 5:
-                    // go Back
+                    startingSwitchMenu();
                     break;
                 default:
                     System.out.println("Choice must be a value between 1 and 5.");
@@ -194,10 +214,10 @@ public class ProjectIndividualPartB {
         String lastname;
         LocalDate date;
         double tuitionFees;
-        Boolean repeat = false;
-        String answer;
+        boolean repeat = true;
+        String answer = "";
 
-        do {
+        while (repeat == true) {
 
             x.QueL("Enter the name of the student : ");
             name = x.ScanForString();
@@ -210,30 +230,132 @@ public class ProjectIndividualPartB {
             //////Creating Object////////////////////////////////
 
             Student student = createObjectStudent(name, lastname, date, tuitionFees);
-            /////////Add To ArrayList///////////////////////////////
+            /////////Add To ArrayList And To Database///////////////////////////////
 
             x.getListOfStudents().add(student);
+            insertStudent(student);
 
             /////////Ask If He Wants To Add More Students////////////
             System.out.println("----------------------------------------");
-            System.out.println("Do you want to add Student [YES / NO]");
-            answer = x.ScanForString();
-            repeat = x.repeaterMethod(answer, repeat);
-            do {
-                
-                if (repeat == null) {
-                    System.out.println("That's not a Answer! Try Again With This Options [YES / NO] :");
-                    answer = x.ScanForString();
-                }else if (repeat == false){
-                    System.out.println("\n");
-                    System.out.println("Back To [CREATE] menu ");
-                    startingSwitchMenu();
-                }
 
-                repeat = x.repeaterMethod(answer, repeat);
+            repeat = x.chooseYesOrNo();
+        }
+        System.out.println("\n");
+        createOptionSwitchMenu();
+    }
 
-            } while (repeat == null);
-        } while (repeat == true);
+    public static void createTrainer() {
+
+        String name;
+        String lastname;
+        String subject;
+        boolean repeat = true;
+        String answer = "";
+
+        while (repeat == true) {
+
+            x.QueL("Enter the name of the trainer : ");
+            name = x.ScanForString();
+            x.QueL("Enter the last name of trainer : ");
+            lastname = x.ScanForString();
+            x.QueL("Enter the subject of trainer : ");
+            subject = x.ScanForString();
+            //////Creating Object////////////////////////////////
+
+            Trainer trainer = createObjectTrainer(lastname, lastname, answer);
+            /////////Add To ArrayList///////////////////////////////
+
+            x.getListOfTrainers().add(trainer);
+            insertTrainer(trainer);
+
+            /////////Ask If He Wants To Add More Trainer////////////
+            System.out.println("----------------------------------------");
+
+            repeat = x.chooseYesOrNo();
+        }
+        System.out.println("\n");
+        createOptionSwitchMenu();
+
+    }
+
+    public static void createAssignment() {
+
+        String title;
+        String description;
+        LocalDate subDateTime;
+        double oralMark;
+        double totalMark;
+        boolean repeat = true;
+        String answer = "";
+
+        while (repeat == true) {
+
+            x.QueL("Enter the title of the assignment : ");
+            title = x.ScanForString();
+            x.QueL("Enter the description of assignment : ");
+            description = x.ScanForString();
+            x.QueL("Enter the subDateTime of assignment : ");
+            subDateTime = x.ScanForDate();
+            x.QueL("Enter the oral Mark of assignment : ");
+            oralMark = x.ScanForDouble();
+            x.QueL("Enter the total Mark of assignment : ");
+            totalMark = x.ScanForDouble();
+            //////Creating Object////////////////////////////////
+
+            Assignment assignment = createObjectAssignment(title, description, subDateTime, oralMark, totalMark);
+            /////////Add To ArrayList///////////////////////////////
+
+            x.getListOfAssignments().add(assignment);
+            insertAssignment(assignment);
+
+            /////////Ask If He Wants To Add More assignment////////////
+            System.out.println("----------------------------------------");
+
+            repeat = x.chooseYesOrNo();
+        }
+        System.out.println("\n");
+        createOptionSwitchMenu();
+
+    }
+
+    public static void createCourse() {
+
+        String title;
+        String stream;
+        String type;
+        LocalDate start_Date;
+        LocalDate end_Date;
+        boolean repeat = true;
+        String answer = "";
+
+        while (repeat == true) {
+
+            x.QueL("Enter the title of the course : ");
+            title = x.ScanForString();
+            x.QueL("Enter the stream of course : ");
+            stream = x.ScanForString();
+            x.QueL("Enter the type of course : ");
+            type = x.ScanForString();
+            x.QueL("Enter the starting date of course : ");
+            start_Date = x.ScanForDate();
+            x.QueL("Enter the ending date of course : ");
+            end_Date = x.ScanForDate();
+
+            //////Creating Object////////////////////////////////
+            Course course = createObjectCourse(title, stream, type, start_Date, end_Date);
+            /////////Add To ArrayList///////////////////////////////
+
+            x.getListOfCourses().add(course);
+            insertCourse(course);
+
+            /////////Ask If He Wants To Add More course////////////
+            System.out.println("----------------------------------------");
+
+            repeat = x.chooseYesOrNo();
+        }
+        System.out.println("\n");
+        createOptionSwitchMenu();
+
     }
 
     private static Student createObjectStudent(String name, String lastname, LocalDate dateofBirth, double tuitionFees) {
@@ -243,4 +365,123 @@ public class ProjectIndividualPartB {
         return (student);
     }
 
+    private static Trainer createObjectTrainer(String firstName, String lastName, String subject) {
+
+        Trainer trainer = new Trainer(firstName, lastName, subject);
+        return (trainer);
+    }
+
+    private static Assignment createObjectAssignment(String title, String description, LocalDate subDueDate, double oralMark, double totalMark) {
+
+        Assignment assignment = new Assignment(title, description, subDueDate, oralMark, totalMark);
+        return (assignment);
+
+    }
+
+    private static Course createObjectCourse(String title, String stream, String type, LocalDate start_Date, LocalDate end_Date) {
+
+        Course course = new Course(title, stream, type, start_Date, end_Date);
+        return (course);
+
+    }
+
+    private static void insertStudent(Student student) {
+
+        Database db = x.getDb();
+        Connection conn = db.createConnection();
+
+        String query = "INSERT INTO `bootcamp`.`students` (`fname`,`lname`,`dob`,`tfees`)"
+                + "values (?,?,?,?);";
+
+        try {
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, student.getFirstName());
+            preparedStatement.setString(2, student.getLastName());
+            preparedStatement.setDate(3, Date.valueOf(student.getDateOfBirth()));
+            preparedStatement.setDouble(4, student.getTuitionFees());
+
+            preparedStatement.execute();
+
+            conn.close();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ProjectIndividualPartB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    private static void insertCourse(Course course) {
+
+        Database db = x.getDb();
+        Connection conn = db.createConnection();
+
+        String query = "INSERT INTO `bootcamp`.`courses` (`title`,`stream`,`type`,`start_date`,`start_date`)"
+                + "values (?,?,?,?,?);";
+
+        try {
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, course.getTitle());
+            preparedStatement.setString(2, course.getStream());
+            preparedStatement.setString(3, course.getType());
+            preparedStatement.setDate(4, Date.valueOf(course.getStart_Date()));
+            preparedStatement.setDate(5, Date.valueOf(course.getEnd_Date()));
+
+            preparedStatement.execute();
+
+            conn.close();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ProjectIndividualPartB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    private static void insertAssignment(Assignment assignment) {
+
+        Database db = x.getDb();
+        Connection conn = db.createConnection();
+
+        String query = "INSERT INTO `bootcamp`.`assignments` (`title`,`description`,`subDateTime`,`oralMark`,`totalMark`)"
+                + "values (?,?,?,?,?);";
+
+        try {
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, assignment.getTitle());
+            preparedStatement.setString(2, assignment.getDescription());
+            preparedStatement.setDate(3, Date.valueOf(assignment.getSubDateTime()));
+            preparedStatement.setDouble(4, assignment.getOralMark());
+            preparedStatement.setDouble(5, assignment.getTotalMark());
+
+            preparedStatement.execute();
+
+            conn.close();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ProjectIndividualPartB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private static void insertTrainer(Trainer trainer) {
+
+        Database db = x.getDb();
+        Connection conn = db.createConnection();
+
+        String query = "INSERT INTO `bootcamp`.`trainers` (`fname`,`lname`,`subject`)"
+                + "values (?,?,?);";
+
+        try {
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, trainer.getFirstName());
+            preparedStatement.setString(2, trainer.getLastName());
+            preparedStatement.setString(3, trainer.getSubject());
+
+            preparedStatement.execute();
+
+            conn.close();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ProjectIndividualPartB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
 }
