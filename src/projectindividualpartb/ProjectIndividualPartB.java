@@ -233,7 +233,7 @@ public class ProjectIndividualPartB {
             /////////Add To ArrayList And To Database///////////////////////////////
 
             x.getListOfStudents().add(student);
-            insertStudent(student);
+            insertStudentToDatabase(student);
 
             /////////Ask If He Wants To Add More Students////////////
             System.out.println("----------------------------------------");
@@ -266,7 +266,7 @@ public class ProjectIndividualPartB {
             /////////Add To ArrayList///////////////////////////////
 
             x.getListOfTrainers().add(trainer);
-            insertTrainer(trainer);
+            insertTrainerToDatabase(trainer);
 
             /////////Ask If He Wants To Add More Trainer////////////
             System.out.println("----------------------------------------");
@@ -306,7 +306,7 @@ public class ProjectIndividualPartB {
             /////////Add To ArrayList///////////////////////////////
 
             x.getListOfAssignments().add(assignment);
-            insertAssignment(assignment);
+            insertAssignmentToDatabase(assignment);
 
             /////////Ask If He Wants To Add More assignment////////////
             System.out.println("----------------------------------------");
@@ -346,7 +346,7 @@ public class ProjectIndividualPartB {
             /////////Add To ArrayList///////////////////////////////
 
             x.getListOfCourses().add(course);
-            insertCourse(course);
+            insertCourseToDatabase(course);
 
             /////////Ask If He Wants To Add More course////////////
             System.out.println("----------------------------------------");
@@ -385,7 +385,7 @@ public class ProjectIndividualPartB {
 
     }
 
-    private static void insertStudent(Student student) {
+    private static void insertStudentToDatabase(Student student) {
 
         Database db = x.getDb();
         Connection conn = db.createConnection();
@@ -410,7 +410,7 @@ public class ProjectIndividualPartB {
 
     }
 
-    private static void insertCourse(Course course) {
+    private static void insertCourseToDatabase(Course course) {
 
         Database db = x.getDb();
         Connection conn = db.createConnection();
@@ -436,7 +436,7 @@ public class ProjectIndividualPartB {
 
     }
 
-    private static void insertAssignment(Assignment assignment) {
+    private static void insertAssignmentToDatabase(Assignment assignment) {
 
         Database db = x.getDb();
         Connection conn = db.createConnection();
@@ -461,7 +461,7 @@ public class ProjectIndividualPartB {
         }
     }
 
-    private static void insertTrainer(Trainer trainer) {
+    private static void insertTrainerToDatabase(Trainer trainer) {
 
         Database db = x.getDb();
         Connection conn = db.createConnection();
@@ -484,4 +484,8 @@ public class ProjectIndividualPartB {
         }
 
     }
+    
+    
+    
+    
 }
