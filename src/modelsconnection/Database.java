@@ -134,6 +134,21 @@ public class Database {
 
     }
 
+    public void createProcedureToDatabase(String procedure) {
+
+        try {
+            Connection conn = this.createConnection();
+            Statement statement = conn.createStatement();
+            statement.execute(procedure);
+
+            statement.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
     public String getServerIP() {
         return serverIP;
     }
