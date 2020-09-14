@@ -25,6 +25,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import modelsconnection.Enrollment;
 
 /**
  *
@@ -38,8 +39,10 @@ public class ProjectIndividualPartB {
         //createStudent();
 
         //createCourse();
-        createTablesToDatabase();
-
+        //createTablesToDatabase();
+       
+        Enrollment en = new Enrollment();
+       // en.createProcedureForCourseInsideToEnrollment();
     }
 
     /*Create A menu Which Has 
@@ -522,7 +525,7 @@ public class ProjectIndividualPartB {
         switch (num) {
             case (1):
                 x.QueNL("Creating table Students in given database...");
-                query = "CREATE TABLE `zavibootcamp`.`students` (\n"
+                query = "CREATE TABLE IF NOT EXISTS `zavibootcamp`.`students` (\n"
                         + "    `id` INT NOT NULL AUTO_INCREMENT,\n"
                         + "    `fname` VARCHAR(40) NOT NULL,\n"
                         + "    `lname` VARCHAR(40) NOT NULL,\n"
@@ -533,7 +536,7 @@ public class ProjectIndividualPartB {
                 break;
             case (2):
                 x.QueNL("Creating table Courses in given database...");
-                query = "CREATE TABLE `zavibootcamp`.`courses` (\n"
+                query = "CREATE TABLE IF NOT EXISTS `zavibootcamp`.`courses` (\n"
                         + "    `id` INT NOT NULL AUTO_INCREMENT,\n"
                         + "    `title` VARCHAR(40) NOT NULL,\n"
                         + "    `stream` VARCHAR(40) NOT NULL,\n"
@@ -545,7 +548,7 @@ public class ProjectIndividualPartB {
                 break;
             case (3):
                 x.QueNL("Creating table Assignments in given database...");
-                query = "CREATE TABLE `zavibootcamp`.`assignments` (\n"
+                query = "CREATE TABLE IF NOT EXISTS `zavibootcamp`.`assignments` (\n"
                         + "    `id` INT NOT NULL AUTO_INCREMENT,\n"
                         + "    `title` VARCHAR(40) NOT NULL,\n"
                         + "    `descr` VARCHAR(40) NOT NULL,\n"
@@ -557,7 +560,7 @@ public class ProjectIndividualPartB {
                 break;
             case (4):
                 x.QueNL("Creating table Trainers in given database...");
-                query = "CREATE TABLE `zavibootcamp`.`trainers` (\n"
+                query = "CREATE TABLE IF NOT EXISTS `zavibootcamp`.`trainers` (\n"
                         + "    `id` INT NOT NULL AUTO_INCREMENT,\n"
                         + "    `fname` VARCHAR(40) NOT NULL,\n"
                         + "    `lname` VARCHAR(40) NOT NULL,\n"
@@ -567,7 +570,7 @@ public class ProjectIndividualPartB {
                 break;
             case (5):
                 x.QueNL("Creating table Enrollment in given database...");
-                query = "CREATE TABLE `zavibootcamp`.`enrollment` (\n"
+                query = "CREATE TABLE IF NOT EXISTS `zavibootcamp`.`enrollment` (\n"
                         + "  `id` INT NOT NULL AUTO_INCREMENT,\n"
                         + "  `cid` INT NOT NULL,\n"
                         + "  PRIMARY KEY (`id`),\n"
@@ -580,7 +583,7 @@ public class ProjectIndividualPartB {
                 break;
             case (6):
                 x.QueNL("Creating table StudentEnrollment in given database...");
-                query = "CREATE TABLE `zavibootcamp`.`studentenrollment` (\n"
+                query = "CREATE TABLE IF NOT EXISTS `zavibootcamp`.`studentenrollment` (\n"
                         + "  `id` INT NOT NULL AUTO_INCREMENT,\n"
                         + "  `enid` INT NOT NULL,\n"
                         + "  `sid` INT NOT NULL,\n"
@@ -600,7 +603,7 @@ public class ProjectIndividualPartB {
                 break;
             case (7):
                 x.QueNL("Creating table TrainerEnrollment in given database...");
-                query = " CREATE TABLE `zavibootcamp`.`trainerenrollment` (\n"
+                query = "CREATE TABLE IF NOT EXISTS `.`trainerenrollment` (\n"
                         + "  `id` INT NOT NULL AUTO_INCREMENT,\n"
                         + "  `enid` INT NOT NULL,\n"
                         + "  `tid` INT NOT NULL,\n"
@@ -620,7 +623,7 @@ public class ProjectIndividualPartB {
                 break;
             case (8):
                 x.QueNL("Creating table EnrollmentAssignment in given database...");
-                query = "CREATE TABLE `zavibootcamp`.`enrollmentassignment` (\n"
+                query = "CREATE TABLE IF NOT EXISTS `zavibootcamp`.`enrollmentassignment` (\n"
                         + "  `id` INT NOT NULL AUTO_INCREMENT,\n"
                         + "  `seid` INT NOT NULL,\n"
                         + "  `asid` INT NOT NULL,\n"

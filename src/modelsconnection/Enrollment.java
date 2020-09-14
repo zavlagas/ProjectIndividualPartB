@@ -5,6 +5,7 @@
  */
 package modelsconnection;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -30,7 +31,10 @@ public class Enrollment {
     }
 
     public Enrollment(Course course) {
+
         this.course = course;
+        createProcedureForCourseInsideToEnrollment();
+        callProcedureForCourseInsideToEnrollment(course);
 
     }
 
@@ -46,19 +50,35 @@ public class Enrollment {
 
     //////////////Database Connection Enrollment with course/////////////////////
     public void createProcedureForCourseInsideToEnrollment() {
-        String procedure = "DELIMITER //\n"
-                + "    CREATE PROCEDURE `findCourseIdFromTitle`(in `inputtitle` VARCHAR(40))\n"
-                + "    BEGIN\n"
+        ///        Drop Procedure First          ///////
+        db.dropProcedureOrTable("DROP PROCEDURE `findCourseIdFromTitle`");
+
+        /////Create The Procedure To String ////////
+        String procedure = "    CREATE PROCEDURE `findCourseIdFromTitle`(in `inputtitle` VARCHAR(40))\n"
+                + "    BEGIN"
                 + "    INSERT INTO `zavibootcamp`.`enrollment` (`cid`) \n"
                 + "    VALUES ((SELECT `id` from `zavibootcamp`.`courses`\n"
                 + "    where `title` = `inputtitle`));\n"
-                + "    \n"
-                + "    END //\n"
-                + "    DELIMITER ;";
+                + "    END ";
+
+        ///   Create Procedure to database  //////////
         db.createProcedureToDatabase(procedure);
     }
 
-    public void setCourseToEnrollmentToDatabase() {
+    public void callProcedureForCourseInsideToEnrollment(Course course) {
+
+        try {
+            Connection conn = db.createConnection();
+            CallableStatement callableStatement = conn.prepareCall("{CALL `findCourseIdFromTitle` (?)}");
+            //// Setting values ////
+            callableStatement.setString(1, course.getTitle());
+
+            callableStatement.execute();
+            callableStatement.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Enrollment.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
 
