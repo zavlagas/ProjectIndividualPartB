@@ -35,7 +35,10 @@ public class ProjectIndividualPartB {
     static Tools x = new Tools();
 
     public static void main(String[] args) {
-        createStudent();
+        //createStudent();
+
+        //createCourse();
+        createTablesToDatabase();
 
     }
 
@@ -325,6 +328,8 @@ public class ProjectIndividualPartB {
         String type;
         LocalDate start_Date;
         LocalDate end_Date;
+        LocalDate now = LocalDate.now();
+        boolean validatorDate = true;
         boolean repeat = true;
         String answer = "";
 
@@ -337,16 +342,32 @@ public class ProjectIndividualPartB {
             x.QueL("Enter the type of course : ");
             type = x.ScanForString();
             x.QueL("Enter the starting date of course : ");
-            start_Date = x.ScanForDate();
+            do {
+                if (validatorDate == false) {
+                    x.QueNL("The starting date cant be before " + now + " time ! , Try Again Below");
+
+                }
+                start_Date = x.ScanForDate();
+                validatorDate = x.checkDateAfterNow(now, start_Date);
+
+            } while (validatorDate == false);
             x.QueL("Enter the ending date of course : ");
-            end_Date = x.ScanForDate();
+            do {
+                if (validatorDate == false) {
+                    x.QueNL("The ending date cant be before " + now + " time and " + start_Date + " time ! , Try Again Below");
+
+                }
+                end_Date = x.ScanForDate();
+                validatorDate = x.checkStartDateWithEndDate(start_Date, end_Date);
+
+            } while (validatorDate == false);
 
             //////Creating Object////////////////////////////////
             Course course = createObjectCourse(title, stream, type, start_Date, end_Date);
             /////////Add To ArrayList///////////////////////////////
 
             x.getListOfCourses().add(course);
-            insertCourseToDatabase(course);
+            // insertCourseToDatabase(course);
 
             /////////Ask If He Wants To Add More course////////////
             System.out.println("----------------------------------------");
@@ -390,7 +411,7 @@ public class ProjectIndividualPartB {
         Database db = x.getDb();
         Connection conn = db.createConnection();
 
-        String query = "INSERT INTO `bootcamp`.`students` (`fname`,`lname`,`dob`,`tfees`)"
+        String query = "INSERT INTO `zavibootcamp`.`students` (`fname`,`lname`,`dob`,`tfees`)"
                 + "values (?,?,?,?);";
 
         try {
@@ -415,7 +436,7 @@ public class ProjectIndividualPartB {
         Database db = x.getDb();
         Connection conn = db.createConnection();
 
-        String query = "INSERT INTO `bootcamp`.`courses` (`title`,`stream`,`type`,`start_date`,`start_date`)"
+        String query = "INSERT INTO `zavibootcamp`.`courses` (`title`,`stream`,`type`,`sdate`,`edate`)"
                 + "values (?,?,?,?,?);";
 
         try {
@@ -441,7 +462,7 @@ public class ProjectIndividualPartB {
         Database db = x.getDb();
         Connection conn = db.createConnection();
 
-        String query = "INSERT INTO `bootcamp`.`assignments` (`title`,`description`,`subDateTime`,`oralMark`,`totalMark`)"
+        String query = "INSERT INTO `zavibootcamp`.`assignments` (`title`,`descr`,`subdate`,`omark`,`tmark`)"
                 + "values (?,?,?,?,?);";
 
         try {
@@ -466,7 +487,7 @@ public class ProjectIndividualPartB {
         Database db = x.getDb();
         Connection conn = db.createConnection();
 
-        String query = "INSERT INTO `bootcamp`.`trainers` (`fname`,`lname`,`subject`)"
+        String query = "INSERT INTO `zavibootcamp`.`trainers` (`fname`,`lname`,`subject`)"
                 + "values (?,?,?);";
 
         try {
@@ -484,8 +505,146 @@ public class ProjectIndividualPartB {
         }
 
     }
-    
-    
-    
-    
+
+    private static void createTablesToDatabase() {
+        Database db = x.getDb();
+        String query;
+
+        for (int i = 1; i <= 8; i++) {
+            query = createSwitchForTables(i);
+            db.createTablesToDatabase(query);
+        }
+
+    }
+
+    public static String createSwitchForTables(int num) {
+        String query = "";
+        switch (num) {
+            case (1):
+                x.QueNL("Creating table Students in given database...");
+                query = "CREATE TABLE `zavibootcamp`.`students` (\n"
+                        + "    `id` INT NOT NULL AUTO_INCREMENT,\n"
+                        + "    `fname` VARCHAR(40) NOT NULL,\n"
+                        + "    `lname` VARCHAR(40) NOT NULL,\n"
+                        + "    `dob` DATE NOT NULL,\n"
+                        + "    `tfees` DOUBLE NOT NULL,\n"
+                        + "    PRIMARY KEY (`id`)\n"
+                        + ");";
+                break;
+            case (2):
+                x.QueNL("Creating table Courses in given database...");
+                query = "CREATE TABLE `zavibootcamp`.`courses` (\n"
+                        + "    `id` INT NOT NULL AUTO_INCREMENT,\n"
+                        + "    `title` VARCHAR(40) NOT NULL,\n"
+                        + "    `stream` VARCHAR(40) NOT NULL,\n"
+                        + "    `type` VARCHAR(40) NOT NULL,\n"
+                        + "    `sdate` DATE NOT NULL,\n"
+                        + "    `edate` DATE NOT NULL,\n"
+                        + "    PRIMARY KEY (`id`)\n"
+                        + ");";
+                break;
+            case (3):
+                x.QueNL("Creating table Assignments in given database...");
+                query = "CREATE TABLE `zavibootcamp`.`assignments` (\n"
+                        + "    `id` INT NOT NULL AUTO_INCREMENT,\n"
+                        + "    `title` VARCHAR(40) NOT NULL,\n"
+                        + "    `descr` VARCHAR(40) NOT NULL,\n"
+                        + "    `subdate` DATE NOT NULL,\n"
+                        + "    `omark` DECIMAL(4,2) NOT NULL,\n"
+                        + "    `tmark` DECIMAL(4,2) NOT NULL,\n"
+                        + "    PRIMARY KEY (`id`)\n"
+                        + ");";
+                break;
+            case (4):
+                x.QueNL("Creating table Trainers in given database...");
+                query = "CREATE TABLE `zavibootcamp`.`trainers` (\n"
+                        + "    `id` INT NOT NULL AUTO_INCREMENT,\n"
+                        + "    `fname` VARCHAR(40) NOT NULL,\n"
+                        + "    `lname` VARCHAR(40) NOT NULL,\n"
+                        + "    `subject` VARCHAR(40) NOT NULL,\n"
+                        + "    PRIMARY KEY (`id`)\n"
+                        + ");";
+                break;
+            case (5):
+                x.QueNL("Creating table Enrollment in given database...");
+                query = "CREATE TABLE `zavibootcamp`.`enrollment` (\n"
+                        + "  `id` INT NOT NULL AUTO_INCREMENT,\n"
+                        + "  `cid` INT NOT NULL,\n"
+                        + "  PRIMARY KEY (`id`),\n"
+                        + "  INDEX `fk_enrollment_cid_course_id_idx` (`cid` ASC) VISIBLE,\n"
+                        + "  CONSTRAINT `fk_enrollment_cid_course_id`\n"
+                        + "    FOREIGN KEY (`cid`)\n"
+                        + "    REFERENCES `zavibootcamp`.`courses` (`id`)\n"
+                        + "    ON DELETE NO ACTION\n"
+                        + "    ON UPDATE NO ACTION);";
+                break;
+            case (6):
+                x.QueNL("Creating table StudentEnrollment in given database...");
+                query = "CREATE TABLE `zavibootcamp`.`studentenrollment` (\n"
+                        + "  `id` INT NOT NULL AUTO_INCREMENT,\n"
+                        + "  `enid` INT NOT NULL,\n"
+                        + "  `sid` INT NOT NULL,\n"
+                        + "  PRIMARY KEY (`id`),\n"
+                        + "  INDEX `fk_studentenrollment_sid_students_id_idx` (`sid` ASC) VISIBLE,\n"
+                        + "  INDEX `fk_studentenrollment_enid_enrollment_id_idx` (`enid` ASC) VISIBLE,\n"
+                        + "  CONSTRAINT `fk_studentenrollment_sid_students_id`\n"
+                        + "    FOREIGN KEY (`sid`)\n"
+                        + "    REFERENCES `zavibootcamp`.`students` (`id`)\n"
+                        + "    ON DELETE NO ACTION\n"
+                        + "    ON UPDATE NO ACTION,\n"
+                        + "  CONSTRAINT `fk_studentenrollment_enid_enrollment_id`\n"
+                        + "    FOREIGN KEY (`enid`)\n"
+                        + "    REFERENCES `zavibootcamp`.`enrollment` (`id`)\n"
+                        + "    ON DELETE NO ACTION\n"
+                        + "    ON UPDATE NO ACTION);";
+                break;
+            case (7):
+                x.QueNL("Creating table TrainerEnrollment in given database...");
+                query = " CREATE TABLE `zavibootcamp`.`trainerenrollment` (\n"
+                        + "  `id` INT NOT NULL AUTO_INCREMENT,\n"
+                        + "  `enid` INT NOT NULL,\n"
+                        + "  `tid` INT NOT NULL,\n"
+                        + "  PRIMARY KEY (`id`),\n"
+                        + "  INDEX `fk_trainerenrollment_tid_trainer_id_idx` (`tid` ASC) VISIBLE,\n"
+                        + "  INDEX `fk_trainerenrollment_enid_enrollment_id_idx` (`enid` ASC) VISIBLE,\n"
+                        + "  CONSTRAINT `fk_trainerenrollment_tid_trainer_id`\n"
+                        + "    FOREIGN KEY (`tid`)\n"
+                        + "    REFERENCES `zavibootcamp`.`trainers` (`id`)\n"
+                        + "    ON DELETE NO ACTION\n"
+                        + "    ON UPDATE NO ACTION,\n"
+                        + "  CONSTRAINT `fk_trainerenrollment_enid_enrollment_id`\n"
+                        + "    FOREIGN KEY (`enid`)\n"
+                        + "    REFERENCES `zavibootcamp`.`enrollment` (`id`)\n"
+                        + "    ON DELETE NO ACTION\n"
+                        + "    ON UPDATE NO ACTION);";
+                break;
+            case (8):
+                x.QueNL("Creating table EnrollmentAssignment in given database...");
+                query = "CREATE TABLE `zavibootcamp`.`enrollmentassignment` (\n"
+                        + "  `id` INT NOT NULL AUTO_INCREMENT,\n"
+                        + "  `seid` INT NOT NULL,\n"
+                        + "  `asid` INT NOT NULL,\n"
+                        + "  `omark` DECIMAL(4,2) NOT NULL,\n"
+                        + "  `tmark` DECIMAL(4,2) NOT NULL,\n"
+                        + "  PRIMARY KEY (`id`),\n"
+                        + "  INDEX `fk_enrollmentassignment_asid_assignment_id_idx` (`asid` ASC) VISIBLE,\n"
+                        + "  INDEX `fk_enrollmentassignment_seid_studentenrollment_id_idx` (`seid` ASC) VISIBLE,\n"
+                        + "  CONSTRAINT `fk_enrollmentassignment_asid_assignment_id`\n"
+                        + "    FOREIGN KEY (`asid`)\n"
+                        + "    REFERENCES `zavibootcamp`.`assignments` (`id`)\n"
+                        + "    ON DELETE NO ACTION\n"
+                        + "    ON UPDATE NO ACTION,\n"
+                        + "  CONSTRAINT `fk_enrollmentassignment_seid_studentenrollment_id`\n"
+                        + "    FOREIGN KEY (`seid`)\n"
+                        + "    REFERENCES `zavibootcamp`.`studentenrollment` (`id`)\n"
+                        + "    ON DELETE NO ACTION\n"
+                        + "    ON UPDATE NO ACTION);";
+                break;
+
+        }
+
+        return (query);
+
+    }
+
 }

@@ -118,6 +118,22 @@ public class Database {
         return (count);
     }
 
+    public void createTablesToDatabase(String sql) {
+
+        System.out.println("Connected database successfully...");
+        System.out.println("Creating table in given database...");
+        Connection conn = createConnection();
+        Statement statement = createStatement();
+        try {
+            statement.executeUpdate(sql);
+            statement.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
     public String getServerIP() {
         return serverIP;
     }

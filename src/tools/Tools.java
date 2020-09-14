@@ -60,12 +60,12 @@ public final class Tools {
     }
 
     private void setDb() {
-        this.db = new Database("localhost", "3306", "bootcamp", "root", "1234");
+        this.db = new Database("localhost", "3306", "zavibootcamp", "root", "1234");
 
     }
-    
-    public  ResultSet executeQuery(String sql) {
-        
+
+    public ResultSet executeQuery(String sql) {
+
         ResultSet rs = null;
         rs = db.connectAndExecuteQuery(sql);
         return (rs);
@@ -160,7 +160,7 @@ public final class Tools {
     }
     /////////////////////////////DATE  /////////////////////////////
 
-    public static boolean validateLocalDate(String dateFromString, DateTimeFormatter formatter) {
+    public boolean validateLocalDate(String dateFromString, DateTimeFormatter formatter) {
         LocalDate date = null;
         boolean validate = true;
         try {
@@ -168,7 +168,31 @@ public final class Tools {
         } catch (DateTimeParseException e) {
             validate = false;
         }
-        return validate;
+        return (validate);
+    }
+
+    public boolean checkDateAfterNow(LocalDate now, LocalDate start_Date) {
+
+        while (true) {
+
+            if (start_Date.isAfter(now)) {
+                return (true);
+            } else {
+                return (false);
+            }
+        }
+    }
+
+    public boolean checkStartDateWithEndDate(LocalDate start_Date, LocalDate end_Date) {
+
+        while (true) {
+
+            if (end_Date.isAfter(start_Date)) {
+                return (true);
+            } else {
+                return (false);
+            }
+        }
     }
 
     ///////////////////////////// READ THE ArrayLISTS /////////////////////////////
