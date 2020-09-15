@@ -63,6 +63,50 @@ public final class Tools {
         this.db = new Database("localhost", "3306", "zavibootcamp", "root", "1234");
 
     }
+    
+    public void clearDatabase(){
+    String table;
+    for(int i = 1; i <= 8; i++){
+        table = databaseTablesSwitcher(i);
+        db.clearTablesDatabase(table);
+    
+    }
+    
+    
+    
+    }
+
+    public String databaseTablesSwitcher(int num) {
+        String table = "";
+        switch (num) {
+            case 1:
+                table = "enrollmentassignment";
+                break;
+            case 2:
+                table = "studentenrollment";
+                break;
+            case 3:
+                table = "trainerenrollment";
+                break;
+            case 4:
+                table = "enrollment";
+                break;
+            case 5:
+                table = "trainers";
+                break;
+            case 6:
+                table = "assignments";
+                break;
+            case 7:
+                table = "students";
+                break;
+            case 8:
+                table = "courses";
+        }
+
+       return(table);
+
+    }
 
     public ResultSet executeQuery(String sql) {
 

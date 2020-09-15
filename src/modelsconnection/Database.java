@@ -133,6 +133,9 @@ public class Database {
         }
 
     }
+    
+ 
+
 
     public void createProcedureToDatabase(String procedure) {
 
@@ -148,9 +151,9 @@ public class Database {
         }
 
     }
-    
-    public void dropProcedureOrTable(String procedureOrTable){
-     try {
+
+    public void dropProcedureOrTable(String procedureOrTable) {
+        try {
             Connection conn = this.createConnection();
             Statement statement = conn.createStatement();
             statement.executeUpdate(procedureOrTable);
@@ -160,14 +163,21 @@ public class Database {
         } catch (SQLException ex) {
             Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+    }
     
+    
+    public void clearTablesDatabase(String table){
+        dropProcedureOrTable("DROP TABLES IF EXISTS "+this.databaseName+ "."+ table + " ;");
+    }
+    
+    public void clearProceduresFromDatabase(String procedureName){
+    
+        dropProcedureOrTable("DROP PROCEDURE IF EXISTS "+this.databaseName+"."+ procedureName +";");
     
     
     }
 
-    
-    
-    
     public String getServerIP() {
         return serverIP;
     }

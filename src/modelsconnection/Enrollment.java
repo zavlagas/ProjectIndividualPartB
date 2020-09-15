@@ -33,8 +33,6 @@ public class Enrollment {
     public Enrollment(Course course) {
 
         this.course = course;
-        createProcedureForCourseInsideToEnrollment();
-        callProcedureForCourseInsideToEnrollment(course);
 
     }
 
@@ -51,10 +49,12 @@ public class Enrollment {
     //////////////Database Connection Enrollment with course/////////////////////
     public void createProcedureForCourseInsideToEnrollment() {
         ///        Drop Procedure First          ///////
-        db.dropProcedureOrTable("DROP PROCEDURE `findCourseIdFromTitle`");
+        String procedureName = "findCourseIdFromTitle";
+        
+        db.clearProceduresFromDatabase(procedureName);
 
         /////Create The Procedure To String ////////
-        String procedure = "    CREATE PROCEDURE `findCourseIdFromTitle`(in `inputtitle` VARCHAR(40))\n"
+        String procedure = "CREATE PROCEDURE "+procedureName+" (in `inputtitle` VARCHAR(40))\n"
                 + "    BEGIN"
                 + "    INSERT INTO `zavibootcamp`.`enrollment` (`cid`) \n"
                 + "    VALUES ((SELECT `id` from `zavibootcamp`.`courses`\n"

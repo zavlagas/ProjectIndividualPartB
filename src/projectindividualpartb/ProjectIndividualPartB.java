@@ -23,9 +23,12 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Month;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.util.converter.LocalDateStringConverter;
 import modelsconnection.Enrollment;
+import modelsconnection.StudentEnrollment;
 
 /**
  *
@@ -36,13 +39,25 @@ public class ProjectIndividualPartB {
     static Tools x = new Tools();
 
     public static void main(String[] args) {
-        //createStudent();
 
-        //createCourse();
-        //createTablesToDatabase();
-       
-        Enrollment en = new Enrollment();
-       // en.createProcedureForCourseInsideToEnrollment();
+        x.clearDatabase();
+        createTablesToDatabase();
+
+        Student st = new Student("Zavi", "test", LocalDate.of(2020, Month.MARCH, 5), 1000);
+
+        Course co = new Course("JAva", "test", "type", LocalDate.of(2021, Month.MARCH, 5), LocalDate.of(2022, Month.MARCH, 5));
+
+        insertStudentToDatabase(st);
+        insertCourseToDatabase(co);
+
+        Enrollment p = new Enrollment(co);
+        p.createProcedureForCourseInsideToEnrollment();
+        p.callProcedureForCourseInsideToEnrollment(co);
+
+        StudentEnrollment y = new StudentEnrollment(st, co);
+        y.createProcedureForCourseAndStudentInsideToStudentEnrollment();
+        y.callProcedureEnrollmentStudentInsert(st, co);
+
     }
 
     /*Create A menu Which Has 
@@ -370,7 +385,8 @@ public class ProjectIndividualPartB {
             /////////Add To ArrayList///////////////////////////////
 
             x.getListOfCourses().add(course);
-            // insertCourseToDatabase(course);
+            insertCourseToDatabase(course);
+            Enrollment en = new Enrollment(course);
 
             /////////Ask If He Wants To Add More course////////////
             System.out.println("----------------------------------------");
@@ -603,7 +619,7 @@ public class ProjectIndividualPartB {
                 break;
             case (7):
                 x.QueNL("Creating table TrainerEnrollment in given database...");
-                query = "CREATE TABLE IF NOT EXISTS `.`trainerenrollment` (\n"
+                query = "CREATE TABLE IF NOT EXISTS `zavibootcamp`.`trainerenrollment` (\n"
                         + "  `id` INT NOT NULL AUTO_INCREMENT,\n"
                         + "  `enid` INT NOT NULL,\n"
                         + "  `tid` INT NOT NULL,\n"
