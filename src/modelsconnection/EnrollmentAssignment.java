@@ -13,8 +13,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import objects.Assignment;
 import objects.Course;
 import objects.Student;
+import objects.Trainer;
 import projectindividualpartb.ProjectIndividualPartB;
 import tools.Tools;
 
@@ -22,59 +24,59 @@ import tools.Tools;
  *
  * @author User
  */
-public final class StudentEnrollment {
+public final class EnrollmentAssignment {
 
-    private Course course;
-    private Student student;
+    private Assignment assignment;
+    private StudentEnrollment student;
     private Tools x = new Tools();
     private Database db = x.getDb();
 
-    public StudentEnrollment() {
+    public EnrollmentAssignment() {
 
     }
 
-    public StudentEnrollment(Student student, Course course) {
+    public EnrollmentAssignment(Assignment assignment, StudentEnrollment student) {
+        this.assignment = assignment;
         this.student = student;
-        this.course = course;
-        createProcedureForCourseAndStudentInsideToStudentEnrollment();
-        callProcedureEnrollmentStudentInsert(student, course);
+        createProcedureForCourseAndTrainerInsideToTrainerEnrollment();
+        callProcedureEnrollmentStudentInsert(assignment, student);
 
     }
 
     //////////////Database Connection Student with StudentEnrollment Which Host One Enrollment Id And Student Id/////////////////////
-    public void createProcedureForCourseAndStudentInsideToStudentEnrollment() {
-        String procedureName = "enrollmentStudentInsert";
+    public void createProcedureForCourseAndTrainerInsideToTrainerEnrollment() {
+        String procedureName = "enrollmentTrainerInsert";
         
         db.clearProceduresFromDatabase(procedureName);
         /////Create The Procedure To String ////////
-        String procedure = "CREATE PROCEDURE "+procedureName+" (IN `inputfname` VARCHAR(40),IN `inputlname` VARCHAR(40),IN `inputdob` DATE ,IN `inputtitle`  VARCHAR(40))\n"
+        String procedure = "CREATE PROCEDURE "+procedureName+" (IN `inputfname` VARCHAR(40),IN `inputlname` VARCHAR(40),IN `inputsubject`  VARCHAR(40) ,IN `inputtitle`  VARCHAR(40))\n"
                 + "    BEGIN\n"
-                + "    INSERT INTO `zavibootcamp`.`studentenrollment` (`enid`,`sid`) \n"
+                + "    INSERT INTO `zavibootcamp`.`trainerenrollment` (`enid`,`tid`) \n"
                 + "    VALUES ((SELECT `enrollment`.`id` FROM `zavibootcamp`.`enrollment`\n"
                 + "    INNER JOIN `zavibootcamp`.`courses` ON `enrollment`.`cid` = `courses`.`id`\n"
-                + "    WHERE `courses`.`title` = `inputtitle`),(SELECT `students`.`id` FROM `zavibootcamp`.`students` where `fname` = `inputfname`AND `lname` =`inputlname`AND `dob` = `inputdob`));\n"
+                + "    WHERE `courses`.`title` = `inputtitle`),(SELECT `trainers`.`id` FROM `zavibootcamp`.`trainers` where `fname` = `inputfname`AND `lname` =`inputlname`AND `subject` = `inputsubject`));\n"
                 + "    END";
 
         ///   Create Procedure to database  //////////
         db.createProcedureToDatabase(procedure);
     }
 
-    public void callProcedureEnrollmentStudentInsert(Student student, Course course) {
+    public void callProcedureEnrollmentStudentInsert(Assignment assignment, StudentEnrollment student) {
 
         try {
             Connection conn = db.createConnection();
-            CallableStatement callableStatement = conn.prepareCall("{CALL `enrollmentStudentInsert` (?,?,?,?)}");
+            CallableStatement callableStatement = conn.prepareCall("{CALL `enrollmentTrainerInsert` (?,?,?,?)}");
             //// Setting values ////
-            callableStatement.setString(1, student.getFirstName());
-            callableStatement.setString(2, student.getLastName());
-            callableStatement.setDate(3, Date.valueOf(student.getDateOfBirth()));
+            callableStatement.setString(1, trainer.getFirstName());
+            callableStatement.setString(2, trainer.getLastName());
+            callableStatement.setString(3,trainer.getSubject());
             callableStatement.setString(4, course.getTitle());
 
             callableStatement.execute();
             callableStatement.close();
             conn.close();
         } catch (SQLException ex) {
-            Logger.getLogger(StudentEnrollment.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EnrollmentAssignment.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -87,17 +89,17 @@ public final class StudentEnrollment {
         this.course = course;
     }
 
-    public Student getStudent() {
-        return student;
+    public Trainer getTrainer() {
+        return (trainer);
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
+    public void setTrainer(Trainer trainer) {
+        this.trainer = trainer;
     }
 
     @Override
     public String toString() {
-        return "StudentEnrollment{" + "course=" + course + ", student=" + student + '}';
+        return "TrainerEnrollment{" + "course=" + course + ", trainer=" + trainer + '}';
     }
 
 }

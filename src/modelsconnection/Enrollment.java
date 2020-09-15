@@ -20,7 +20,7 @@ import tools.Tools;
  *
  * @author User
  */
-public class Enrollment {
+public final class Enrollment {
 
     Course course;
     Tools x = new Tools();
@@ -33,11 +33,14 @@ public class Enrollment {
     public Enrollment(Course course) {
 
         this.course = course;
+        createProcedureForCourseInsideToEnrollment();
+        callProcedureForCourseInsideToEnrollment(course);
 
     }
 
     public void setCourse(Course course) {
         this.course = course;
+      
     }
 
     public Course getCourse() {

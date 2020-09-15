@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 import javafx.util.converter.LocalDateStringConverter;
 import modelsconnection.Enrollment;
 import modelsconnection.StudentEnrollment;
+import modelsconnection.TrainerEnrollment;
 
 /**
  *
@@ -46,17 +47,22 @@ public class ProjectIndividualPartB {
         Student st = new Student("Zavi", "test", LocalDate.of(2020, Month.MARCH, 5), 1000);
 
         Course co = new Course("JAva", "test", "type", LocalDate.of(2021, Month.MARCH, 5), LocalDate.of(2022, Month.MARCH, 5));
+        
+         Trainer tr = new Trainer("Mitsos", "Takis", "paparas");
 
         insertStudentToDatabase(st);
         insertCourseToDatabase(co);
+        insertTrainerToDatabase(tr);
 
         Enrollment p = new Enrollment(co);
-        p.createProcedureForCourseInsideToEnrollment();
-        p.callProcedureForCourseInsideToEnrollment(co);
-
+       
         StudentEnrollment y = new StudentEnrollment(st, co);
-        y.createProcedureForCourseAndStudentInsideToStudentEnrollment();
-        y.callProcedureEnrollmentStudentInsert(st, co);
+        
+       
+        
+        TrainerEnrollment tre = new TrainerEnrollment(tr, co);
+        
+       
 
     }
 
