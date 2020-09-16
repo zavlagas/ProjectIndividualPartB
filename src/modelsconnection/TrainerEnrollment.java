@@ -25,7 +25,7 @@ import tools.Tools;
  */
 public final class TrainerEnrollment {
 
-    private Course course;
+    private int numberId;
     private Trainer trainer;
     private Tools x = new Tools();
     private Database db = x.getDb();
@@ -34,33 +34,33 @@ public final class TrainerEnrollment {
 
     }
 
-    public TrainerEnrollment(Trainer trainer, Course course) {
+    public TrainerEnrollment(Trainer trainer, int numberId) {
         this.trainer = trainer;
-        this.course = course;
+        this.numberId = numberId;
         createProcedureForCourseAndTrainerInsideToTrainerEnrollment();
-        callProcedureEnrollmentStudentInsert(trainer, course);
+        callProcedureEnrollmentStudentInsert(trainer, numberId);
 
     }
 
     //////////////Database Connection Student with StudentEnrollment Which Host One Enrollment Id And Student Id/////////////////////
     public void createProcedureForCourseAndTrainerInsideToTrainerEnrollment() {
         String procedureName = "enrollmentTrainerInsert";
-        
+
         db.clearProceduresFromDatabase(procedureName);
         /////Create The Procedure To String ////////
-        String procedure = "CREATE PROCEDURE "+procedureName+" (IN `inputfname` VARCHAR(40),IN `inputlname` VARCHAR(40),IN `inputsubject`  VARCHAR(40) ,IN `inputtitle`  VARCHAR(40))\n"
+        String procedure = "CREATE PROCEDURE " + procedureName + " (IN `inputfname` VARCHAR(40),IN `inputlname` VARCHAR(40),IN `inputsubject`  VARCHAR(40) ,IN `inputcourseid` INT)\n"
                 + "    BEGIN\n"
                 + "    INSERT INTO `zavibootcamp`.`trainerenrollment` (`enid`,`tid`) \n"
                 + "    VALUES ((SELECT `enrollment`.`id` FROM `zavibootcamp`.`enrollment`\n"
                 + "    INNER JOIN `zavibootcamp`.`courses` ON `enrollment`.`cid` = `courses`.`id`\n"
-                + "    WHERE `courses`.`title` = `inputtitle`),(SELECT `trainers`.`id` FROM `zavibootcamp`.`trainers` where `fname` = `inputfname`AND `lname` =`inputlname`AND `subject` = `inputsubject`));\n"
+                + "    WHERE `courses`.`id` = `inputcourseid`),(SELECT `trainers`.`id` FROM `zavibootcamp`.`trainers` where `fname` = `inputfname`AND `lname` =`inputlname`AND `subject` = `inputsubject`));\n"
                 + "    END";
 
         ///   Create Procedure to database  //////////
         db.createProcedureToDatabase(procedure);
     }
 
-    public void callProcedureEnrollmentStudentInsert(Trainer trainer, Course course) {
+    public void callProcedureEnrollmentStudentInsert(Trainer trainer, int number) {
 
         try {
             Connection conn = db.createConnection();
@@ -68,8 +68,8 @@ public final class TrainerEnrollment {
             //// Setting values ////
             callableStatement.setString(1, trainer.getFirstName());
             callableStatement.setString(2, trainer.getLastName());
-            callableStatement.setString(3,trainer.getSubject());
-            callableStatement.setString(4, course.getTitle());
+            callableStatement.setString(3, trainer.getSubject());
+            callableStatement.setInt(4, number);
 
             callableStatement.execute();
             callableStatement.close();
@@ -80,14 +80,6 @@ public final class TrainerEnrollment {
 
     }
 
-    public Course getCourse() {
-        return course;
-    }
-
-    public void setCourse(Course course) {
-        this.course = course;
-    }
-
     public Trainer getTrainer() {
         return (trainer);
     }
@@ -96,9 +88,17 @@ public final class TrainerEnrollment {
         this.trainer = trainer;
     }
 
+    public int getNumberId() {
+        return numberId;
+    }
+
+    public void setNumberId(int numberId) {
+        this.numberId = numberId;
+    }
+
     @Override
     public String toString() {
-        return "TrainerEnrollment{" + "course=" + course + ", trainer=" + trainer + '}';
+        return "TrainerEnrollment{" + "numberId=" + numberId + ", trainer=" + trainer + '}';
     }
 
 }

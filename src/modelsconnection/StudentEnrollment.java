@@ -24,8 +24,8 @@ import tools.Tools;
  */
 public final class StudentEnrollment {
 
-    private Course course;
     private Student student;
+    private int numberId;
     private Tools x = new Tools();
     private Database db = x.getDb();
 
@@ -33,33 +33,33 @@ public final class StudentEnrollment {
 
     }
 
-    public StudentEnrollment(Student student, Course course) {
+    public StudentEnrollment(Student student, int numberId) {
         this.student = student;
-        this.course = course;
+        this.numberId = numberId;
         createProcedureForCourseAndStudentInsideToStudentEnrollment();
-        callProcedureEnrollmentStudentInsert(student, course);
+        callProcedureEnrollmentStudentInsert(student, numberId);
 
     }
 
     //////////////Database Connection Student with StudentEnrollment Which Host One Enrollment Id And Student Id/////////////////////
     public void createProcedureForCourseAndStudentInsideToStudentEnrollment() {
         String procedureName = "enrollmentStudentInsert";
-        
+
         db.clearProceduresFromDatabase(procedureName);
         /////Create The Procedure To String ////////
-        String procedure = "CREATE PROCEDURE "+procedureName+" (IN `inputfname` VARCHAR(40),IN `inputlname` VARCHAR(40),IN `inputdob` DATE ,IN `inputtitle`  VARCHAR(40))\n"
+        String procedure = "CREATE PROCEDURE " + procedureName + " (IN `inputfname` VARCHAR(40),IN `inputlname` VARCHAR(40),IN `inputdob` DATE ,IN `inputcourseid` INT)\n"
                 + "    BEGIN\n"
                 + "    INSERT INTO `zavibootcamp`.`studentenrollment` (`enid`,`sid`) \n"
                 + "    VALUES ((SELECT `enrollment`.`id` FROM `zavibootcamp`.`enrollment`\n"
                 + "    INNER JOIN `zavibootcamp`.`courses` ON `enrollment`.`cid` = `courses`.`id`\n"
-                + "    WHERE `courses`.`title` = `inputtitle`),(SELECT `students`.`id` FROM `zavibootcamp`.`students` where `fname` = `inputfname`AND `lname` =`inputlname`AND `dob` = `inputdob`));\n"
+                + "    WHERE `courses`.`id` = `inputcourseid`),(SELECT `students`.`id` FROM `zavibootcamp`.`students` where `fname` = `inputfname` AND `lname` =`inputlname` AND `dob` = `inputdob`));\n"
                 + "    END";
 
         ///   Create Procedure to database  //////////
         db.createProcedureToDatabase(procedure);
     }
 
-    public void callProcedureEnrollmentStudentInsert(Student student, Course course) {
+    public void callProcedureEnrollmentStudentInsert(Student student, int number) {
 
         try {
             Connection conn = db.createConnection();
@@ -68,7 +68,7 @@ public final class StudentEnrollment {
             callableStatement.setString(1, student.getFirstName());
             callableStatement.setString(2, student.getLastName());
             callableStatement.setDate(3, Date.valueOf(student.getDateOfBirth()));
-            callableStatement.setString(4, course.getTitle());
+            callableStatement.setInt(4, number);
 
             callableStatement.execute();
             callableStatement.close();
@@ -79,14 +79,6 @@ public final class StudentEnrollment {
 
     }
 
-    public Course getCourse() {
-        return course;
-    }
-
-    public void setCourse(Course course) {
-        this.course = course;
-    }
-
     public Student getStudent() {
         return student;
     }
@@ -95,9 +87,17 @@ public final class StudentEnrollment {
         this.student = student;
     }
 
+    public int getNumberId() {
+        return numberId;
+    }
+
+    public void setNumberId(int numberId) {
+        this.numberId = numberId;
+    }
+
     @Override
     public String toString() {
-        return "StudentEnrollment{" + "course=" + course + ", student=" + student + '}';
+        return "StudentEnrollment{" + "student=" + student + ", numberId=" + numberId + '}';
     }
 
 }

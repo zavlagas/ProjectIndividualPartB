@@ -26,8 +26,10 @@ import tools.Tools;
  */
 public final class EnrollmentAssignment {
 
-    private Assignment assignment;
-    private StudentEnrollment student;
+    private Student student;
+    private int assignmentId;
+    private double omark;
+    private double tmark;
     private Tools x = new Tools();
     private Database db = x.getDb();
 
@@ -35,43 +37,46 @@ public final class EnrollmentAssignment {
 
     }
 
-    public EnrollmentAssignment(Assignment assignment, StudentEnrollment student) {
-        this.assignment = assignment;
-        this.student = student;
-        createProcedureForCourseAndTrainerInsideToTrainerEnrollment();
-        callProcedureEnrollmentStudentInsert(assignment, student);
+    public EnrollmentAssignment(Student student, int assignmentId, double omark, double tmark) {
 
+        this.student = student;
+        this.assignmentId = assignmentId;
+        this.omark = omark;
+        this.tmark = tmark;
+        createProcedureForEnrollStudentAndAndAssignmentToEnrollAssignment();
+        callProcedureEnrollmentAssignementInsert(student, assignmentId, omark, tmark);
     }
 
     //////////////Database Connection Student with StudentEnrollment Which Host One Enrollment Id And Student Id/////////////////////
-    public void createProcedureForCourseAndTrainerInsideToTrainerEnrollment() {
-        String procedureName = "enrollmentTrainerInsert";
-        
+    public void createProcedureForEnrollStudentAndAndAssignmentToEnrollAssignment() {
+        String procedureName = "enrollmentAssignmentInsert";
+
         db.clearProceduresFromDatabase(procedureName);
         /////Create The Procedure To String ////////
-        String procedure = "CREATE PROCEDURE "+procedureName+" (IN `inputfname` VARCHAR(40),IN `inputlname` VARCHAR(40),IN `inputsubject`  VARCHAR(40) ,IN `inputtitle`  VARCHAR(40))\n"
+        String procedure = "CREATE PROCEDURE " + procedureName + " (IN `inputfname`  VARCHAR(40) , IN `inputlname` VARCHAR(40) , IN `inputdob` DATE ,IN `inputassignmentsId` INT , IN `inputStudentomark` DECIMAL(4,2) ,IN `inputStudenttmark` DECIMAL(4,2))"
                 + "    BEGIN\n"
-                + "    INSERT INTO `zavibootcamp`.`trainerenrollment` (`enid`,`tid`) \n"
-                + "    VALUES ((SELECT `enrollment`.`id` FROM `zavibootcamp`.`enrollment`\n"
-                + "    INNER JOIN `zavibootcamp`.`courses` ON `enrollment`.`cid` = `courses`.`id`\n"
-                + "    WHERE `courses`.`title` = `inputtitle`),(SELECT `trainers`.`id` FROM `zavibootcamp`.`trainers` where `fname` = `inputfname`AND `lname` =`inputlname`AND `subject` = `inputsubject`));\n"
+                + "    INSERT INTO `zavibootcamp`.`enrollmentassignment` (`seid`,`asid`,`omark`,`tmark`)\n"
+                + "    VALUES ((SELECT `studentenrollment`.`id` FROM `zavibootcamp`.`studentenrollment`\n"
+                + "    INNER JOIN `zavibootcamp`.`students` ON `studentenrollment`.`sid` = `students`.`id`\n"
+                + "    WHERE `students`.`fname` = `inputfname` AND `students`.`lname` = `inputlname` AND `students`.`dob` = `inputdob`),(SELECT `assignments`.`id` FROM `zavibootcamp`.`assignments` WHERE `assignments`.`id` = `inputassignmentsId`),inputStudentomark ,inputStudenttmark);\n"
                 + "    END";
 
         ///   Create Procedure to database  //////////
         db.createProcedureToDatabase(procedure);
     }
 
-    public void callProcedureEnrollmentStudentInsert(Assignment assignment, StudentEnrollment student) {
+    public void callProcedureEnrollmentAssignementInsert(Student student, int assignmentId, double omark, double tmark) {
 
         try {
             Connection conn = db.createConnection();
-            CallableStatement callableStatement = conn.prepareCall("{CALL `enrollmentTrainerInsert` (?,?,?,?)}");
+            CallableStatement callableStatement = conn.prepareCall("{CALL `enrollmentAssignmentInsert` (?,?,?,?,?,?)}");
             //// Setting values ////
-            callableStatement.setString(1, trainer.getFirstName());
-            callableStatement.setString(2, trainer.getLastName());
-            callableStatement.setString(3,trainer.getSubject());
-            callableStatement.setString(4, course.getTitle());
-
+            callableStatement.setString(1,student.getFirstName());
+            callableStatement.setString(2,student.getLastName());
+            callableStatement.setDate(3,Date.valueOf(student.getDateOfBirth()));
+            callableStatement.setInt(4,assignmentId);
+            callableStatement.setDouble(5,omark);
+            callableStatement.setDouble(6,tmark);
             callableStatement.execute();
             callableStatement.close();
             conn.close();
@@ -81,25 +86,41 @@ public final class EnrollmentAssignment {
 
     }
 
-    public Course getCourse() {
-        return course;
+    public Student getStudent() {
+        return student;
     }
 
-    public void setCourse(Course course) {
-        this.course = course;
+    public void setStudent(Student student) {
+        this.student = student;
     }
 
-    public Trainer getTrainer() {
-        return (trainer);
+    public int getAssignmentId() {
+        return assignmentId;
     }
 
-    public void setTrainer(Trainer trainer) {
-        this.trainer = trainer;
+    public void setAssignmentId(int assignmentId) {
+        this.assignmentId = assignmentId;
+    }
+
+    public double getOmark() {
+        return omark;
+    }
+
+    public void setOmark(double omark) {
+        this.omark = omark;
+    }
+
+    public double getTmark() {
+        return tmark;
+    }
+
+    public void setTmark(double tmark) {
+        this.tmark = tmark;
     }
 
     @Override
     public String toString() {
-        return "TrainerEnrollment{" + "course=" + course + ", trainer=" + trainer + '}';
+        return "EnrollmentAssignment{" + "student=" + student + ", assignmentId=" + assignmentId + ", omark=" + omark + ", tmark=" + tmark + '}';
     }
 
 }

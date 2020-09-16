@@ -28,6 +28,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.util.converter.LocalDateStringConverter;
 import modelsconnection.Enrollment;
+import modelsconnection.EnrollmentAssignment;
 import modelsconnection.StudentEnrollment;
 import modelsconnection.TrainerEnrollment;
 
@@ -43,26 +44,23 @@ public class ProjectIndividualPartB {
 
         x.clearDatabase();
         createTablesToDatabase();
+//
+        Student st = new Student("nikos", "zavlagas", LocalDate.of(1995, Month.APRIL, 29), 1000);
 
-        Student st = new Student("Zavi", "test", LocalDate.of(2020, Month.MARCH, 5), 1000);
+        Course co = new Course("java", "stream", "type", LocalDate.of(2021, Month.MARCH, 5), LocalDate.of(2022, Month.MARCH, 5));
 
-        Course co = new Course("JAva", "test", "type", LocalDate.of(2021, Month.MARCH, 5), LocalDate.of(2022, Month.MARCH, 5));
-        
-         Trainer tr = new Trainer("Mitsos", "Takis", "paparas");
+        Trainer tr = new Trainer("Mitsos", "Takis", "paparas");
+
+        Assignment as = new Assignment("Ass1", "Ass1Desc", LocalDate.of(2021, Month.MARCH, 5), 20, 80);
 
         insertStudentToDatabase(st);
         insertCourseToDatabase(co);
         insertTrainerToDatabase(tr);
-
+        insertAssignmentToDatabase(as);  
         Enrollment p = new Enrollment(co);
-       
-        StudentEnrollment y = new StudentEnrollment(st, co);
-        
-       
-        
-        TrainerEnrollment tre = new TrainerEnrollment(tr, co);
-        
-       
+        StudentEnrollment y = new StudentEnrollment(st, 1);
+        TrainerEnrollment tre = new TrainerEnrollment(tr, 1);
+        EnrollmentAssignment enas = new EnrollmentAssignment(st, 1, 10.15, 60.45);
 
     }
 
@@ -390,7 +388,6 @@ public class ProjectIndividualPartB {
             Course course = createObjectCourse(title, stream, type, start_Date, end_Date);
             /////////Add To ArrayList///////////////////////////////
 
-            x.getListOfCourses().add(course);
             insertCourseToDatabase(course);
             Enrollment en = new Enrollment(course);
 
@@ -534,7 +531,7 @@ public class ProjectIndividualPartB {
     private static void createTablesToDatabase() {
         Database db = x.getDb();
         String query;
-
+        db.createTablesToDatabase("ALTER DATABASE `zavibootcamp` CHARACTER SET utf8 COLLATE utf8_general_ci;");
         for (int i = 1; i <= 8; i++) {
             query = createSwitchForTables(i);
             db.createTablesToDatabase(query);
