@@ -5,6 +5,7 @@
  */
 package projectindividualpartb;
 
+import ProjectQueries.ProjectQueries;
 import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -39,12 +40,38 @@ import modelsconnection.TrainerEnrollment;
 public class ProjectIndividualPartB {
 
     static Tools x = new Tools();
+    static ProjectQueries p = new ProjectQueries();
 
     public static void main(String[] args) {
+        
+        
+//        StringBuilder sb = new StringBuilder();
+//        args[0] = "IN some IN temp_ISBN varchar(10)";
+//        String procedureQuery = "SELECT * FROM `zavibootcamp`.`students`;";
+//        sb.append("CREATE PROCEDURE ").append("getAllStudent").append(" ( `").append(args.toString()).append("` ) \n").append("BEGIN\n").append(procedureQuery).append("\n").append("END");
+//        String procedure = sb.toString();
+        
+       // System.out.println(args);
+        
+        
+        
+        
 
         x.clearDatabase();
         createTablesToDatabase();
-//
+        p.createQuerieForListOfCourses();
+        p.createQuerieForListOfAssignments();
+        p.createQuerieForListOfAssignmentsPerCourse();
+        p.createQuerieForListOfAssignmentsPerStudentPerCourse();
+        
+        p.createQuerieForListOfStudents();
+        p.createQuerieForListOfStudentsPerCourse();
+        p.createQuerieForListOfTrainers();
+        p.createQuerieForListOfTrainersPerCourse();
+        p.createQuerieForStudentsMultiEnrolled();
+        
+        
+        
         Student st = new Student("nikos", "zavlagas", LocalDate.of(1995, Month.APRIL, 29), 1000);
 
         Course co = new Course("java", "stream", "type", LocalDate.of(2021, Month.MARCH, 5), LocalDate.of(2022, Month.MARCH, 5));
@@ -56,7 +83,7 @@ public class ProjectIndividualPartB {
         insertStudentToDatabase(st);
         insertCourseToDatabase(co);
         insertTrainerToDatabase(tr);
-        insertAssignmentToDatabase(as);  
+        insertAssignmentToDatabase(as);
         Enrollment p = new Enrollment(co);
         StudentEnrollment y = new StudentEnrollment(st, 1);
         TrainerEnrollment tre = new TrainerEnrollment(tr, 1);
@@ -387,10 +414,8 @@ public class ProjectIndividualPartB {
             //////Creating Object////////////////////////////////
             Course course = createObjectCourse(title, stream, type, start_Date, end_Date);
             /////////Add To ArrayList///////////////////////////////
-
             insertCourseToDatabase(course);
             Enrollment en = new Enrollment(course);
-
             /////////Ask If He Wants To Add More course////////////
             System.out.println("----------------------------------------");
 
@@ -666,6 +691,25 @@ public class ProjectIndividualPartB {
         }
 
         return (query);
+
+    }
+
+    public void enrollStudentsToCourse() {
+        int courseId;
+        for (Student student : x.getListOfStudents()) {
+            x.QueNL("Insert Students To Course");
+            x.QueNL("------------------------");
+            x.QueL(student.toString() + " enrolls to Course ID :");
+            courseId = x.ScanForInt();
+        }
+
+    }
+    
+    
+     private void createStoredProcedureForPrintingLists(String procedureName, String procedureQuery, String... pars) {
+        
+
+        db.createProcedureToDatabase(procedure);
 
     }
 

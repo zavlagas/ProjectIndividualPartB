@@ -63,17 +63,15 @@ public final class Tools {
         this.db = new Database("localhost", "3306", "zavibootcamp", "root", "1234");
 
     }
-    
-    public void clearDatabase(){
-    String table;
-    for(int i = 1; i <= 8; i++){
-        table = databaseTablesSwitcher(i);
-        db.clearTablesDatabase(table);
-    
-    }
-    
-    
-    
+
+    public void clearDatabase() {
+        String table;
+        for (int i = 1; i <= 8; i++) {
+            table = databaseTablesSwitcher(i);
+            db.clearTablesDatabase(table);
+
+        }
+
     }
 
     public String databaseTablesSwitcher(int num) {
@@ -104,7 +102,7 @@ public final class Tools {
                 table = "courses";
         }
 
-       return(table);
+        return (table);
 
     }
 
@@ -239,14 +237,7 @@ public final class Tools {
         }
     }
 
-    ///////////////////////////// READ THE ArrayLISTS /////////////////////////////
-    public void loopTheList(List x) {
-
-        for (Object object : x) {
-            System.out.println(object);
-        }
-
-    }
+    
     ///////////////////////////// REPEAT METHODS  /////////////////////////////
 
     public Boolean chooseYesOrNo() {
