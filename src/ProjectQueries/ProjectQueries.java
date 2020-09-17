@@ -9,6 +9,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import modelsconnection.Database;
@@ -218,25 +219,22 @@ public class ProjectQueries {
 
     private void createStoredProcedureForPrintingLists(String procedureName, String procedureQuery, String... pars) {
         StringBuilder sb = new StringBuilder();
-
-        if (pars.toString() == null) {
+        String stringpars = Arrays.toString(pars);
+        if (pars.length == 0) {
             sb.append("CREATE PROCEDURE ").append(procedureName).append("(").append(")\n").append("BEGIN\n").append(procedureQuery).append("\n").append("END");
 
         } else {
-            sb.append("CREATE PROCEDURE ").append(procedureName).append("(").append(pars).append(")\n").append("BEGIN\n").append(procedureQuery).append("\n").append("END");
+            sb.append("CREATE PROCEDURE ").append(procedureName).append("(");
+
+            for (String par : pars) {
+                sb.append(par);
+            }
+            sb.append(")\n").append("BEGIN\n").append(procedureQuery).append("\n").append("END");
         }
         String procedure = sb.toString();
 
         db.createProcedureToDatabase(procedure);
 
-    }
-
-    private String useUnlimitedParametres(String... args) {
-
-        for (int i = 0; i < args.length; i++) {
-
-        }
-        return args;
     }
 
     public void createQuerieForListOfStudents() {
@@ -269,7 +267,7 @@ public class ProjectQueries {
 
     public void createQuerieForListOfAssignmentsPerCourse() {
         String procedureName = "listOfAssignmentsPerCourse";
-        String parametre = "IN `inputCourseId` VARCHAR(40)";
+        String parametre = "IN inputCourseId VARCHAR(40)";
         String procedureQuery = "SELECT `assignments`.`id` AS ID ,`assignments`.`title` AS TITLE, `assignments`.`subdate` AS SUBDATE,`courses`.`title` AS COURSE \n"
                 + "FROM `zavibootcamp`.`students`\n"
                 + "INNER JOIN `zavibootcamp`.`studentenrollment` ON `students`.`id` = `studentenrollment`.`sid`\n"
@@ -285,7 +283,7 @@ public class ProjectQueries {
 
     public void createQuerieForListOfStudentsPerCourse() {
         String procedureName = "listOfStudentsPerCourse";
-        String parametre = "IN `inputCourseId` VARCHAR(40)";
+        String parametre = "IN inputCourseId VARCHAR(40)";
         String procedureQuery = "SELECT `students`.`id` AS ID ,`students`.`fname` AS FIRSTNAME, `students`.`lname` AS LASTNAME,`courses`.`title` AS COURSE \n"
                 + "FROM `zavibootcamp`.`students`\n"
                 + "INNER JOIN `zavibootcamp`.`studentenrollment` ON `students`.`id` = `studentenrollment`.`sid`\n"
@@ -299,7 +297,7 @@ public class ProjectQueries {
 
     public void createQuerieForListOfTrainersPerCourse() {
         String procedureName = "listOfTrainersPerCourse";
-        String parametre = "IN `inputCourseId` VARCHAR(40)";
+        String parametre = "IN inputCourseId VARCHAR(40)";
         String procedureQuery = "SELECT `trainers`.`id` AS ID ,`trainers`.`fname` AS FIRSTNAME, `trainers`.`lname` AS LASTNAME,`courses`.`title` AS COURSE \n"
                 + "FROM `zavibootcamp`.`trainers`\n"
                 + "INNER JOIN `zavibootcamp`.`trainerenrollment` ON `trainers`.`id` = `trainerenrollment`.`sid`\n"
@@ -313,7 +311,7 @@ public class ProjectQueries {
 
     public void createQuerieForListOfAssignmentsPerStudentPerCourse() {
         String procedureName = "listOfAssignmentsPerStudentPerCourse";
-        String parametre = "IN `inputCourseId` VARCHAR(40)";
+        String parametre = "IN inputCourseId VARCHAR(40)";
         String procedureQuery = "SELECT `students`.`id` AS ID ,`students`.`fname` AS FIRSTNAME, `students`.`lname` AS LASTNAME,`courses`.`title` AS COURSE ,`assignments`.`title` AS ASSIGNMENTS\n"
                 + "FROM `zavibootcamp`.`students`\n"
                 + "INNER JOIN `zavibootcamp`.`studentenrollment` ON `students`.`id` = `studentenrollment`.`sid`\n"

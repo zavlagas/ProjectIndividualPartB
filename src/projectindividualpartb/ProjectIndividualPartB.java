@@ -25,6 +25,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Month;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.util.converter.LocalDateStringConverter;
@@ -43,35 +44,11 @@ public class ProjectIndividualPartB {
     static ProjectQueries p = new ProjectQueries();
 
     public static void main(String[] args) {
-        
-        
-//        StringBuilder sb = new StringBuilder();
-//        args[0] = "IN some IN temp_ISBN varchar(10)";
-//        String procedureQuery = "SELECT * FROM `zavibootcamp`.`students`;";
-//        sb.append("CREATE PROCEDURE ").append("getAllStudent").append(" ( `").append(args.toString()).append("` ) \n").append("BEGIN\n").append(procedureQuery).append("\n").append("END");
-//        String procedure = sb.toString();
-        
-       // System.out.println(args);
-        
-        
-        
-        
-
+        p.deleteAllProcedures();
         x.clearDatabase();
         createTablesToDatabase();
-        p.createQuerieForListOfCourses();
-        p.createQuerieForListOfAssignments();
-        p.createQuerieForListOfAssignmentsPerCourse();
-        p.createQuerieForListOfAssignmentsPerStudentPerCourse();
         
-        p.createQuerieForListOfStudents();
-        p.createQuerieForListOfStudentsPerCourse();
-        p.createQuerieForListOfTrainers();
-        p.createQuerieForListOfTrainersPerCourse();
-        p.createQuerieForStudentsMultiEnrolled();
-        
-        
-        
+
         Student st = new Student("nikos", "zavlagas", LocalDate.of(1995, Month.APRIL, 29), 1000);
 
         Course co = new Course("java", "stream", "type", LocalDate.of(2021, Month.MARCH, 5), LocalDate.of(2022, Month.MARCH, 5));
@@ -88,7 +65,6 @@ public class ProjectIndividualPartB {
         StudentEnrollment y = new StudentEnrollment(st, 1);
         TrainerEnrollment tre = new TrainerEnrollment(tr, 1);
         EnrollmentAssignment enas = new EnrollmentAssignment(st, 1, 10.15, 60.45);
-
     }
 
     /*Create A menu Which Has 
@@ -704,12 +680,26 @@ public class ProjectIndividualPartB {
         }
 
     }
-    
-    
-     private void createStoredProcedureForPrintingLists(String procedureName, String procedureQuery, String... pars) {
-        
 
-        db.createProcedureToDatabase(procedure);
+    public static void createStoredProcedureForPrintingLists(String procedureName, String procedureQuery, String... pars) {
+        StringBuilder sb = new StringBuilder();
+
+        if (pars.length == 0) {
+            sb.append("CREATE PROCEDURE ").append(procedureName).append("(").append(")\n").append("BEGIN\n").append(procedureQuery).append("\n").append("END");
+
+        } else {
+
+            sb.append("CREATE PROCEDURE ").append(procedureName).append("(");
+
+            for (String par : pars) {
+                sb.append(par);
+            }
+            sb.append(")\n").append("BEGIN\n").append(procedureQuery).append("\n").append("END");
+
+        }
+        String procedure = sb.toString();
+
+        x.getDb().createProcedureToDatabase(procedure);
 
     }
 
